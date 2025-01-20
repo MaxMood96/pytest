@@ -37,7 +37,7 @@ breaking changes or new features.
 
 For a new minor release, first create a new maintenance branch from ``main``::
 
-     git fetch --all
+     git fetch upstream
      git branch 7.1.x upstream/main
      git push upstream 7.1.x
 
@@ -63,7 +63,7 @@ Major releases
 
 1. Create a new maintenance branch from ``main``::
 
-        git fetch --all
+        git fetch upstream
         git branch 8.0.x upstream/main
         git push upstream 8.0.x
 
@@ -133,20 +133,18 @@ Releasing
 
 Both automatic and manual processes described above follow the same steps from this point onward.
 
-#. After all tests pass and the PR has been approved, tag the release commit
-   in the ``release-MAJOR.MINOR.PATCH`` branch and push it. This will publish to PyPI::
+#. After all tests pass and the PR has been approved, trigger the ``deploy`` job
+   in https://github.com/pytest-dev/pytest/actions/workflows/deploy.yml, using the ``release-MAJOR.MINOR.PATCH`` branch
+   as source.
 
-     git fetch --all
-     git tag MAJOR.MINOR.PATCH upstream/release-MAJOR.MINOR.PATCH
-     git push git@github.com:pytest-dev/pytest.git MAJOR.MINOR.PATCH
+   This job will require approval from ``pytest-dev/core``, after which it will publish to PyPI
+   and tag the repository.
 
-   Wait for the deploy to complete, then make sure it is `available on PyPI <https://pypi.org/project/pytest>`_.
-
-#. Merge the PR.
+#. Merge the PR. **Make sure it's not squash-merged**, so that the tagged commit ends up in the main branch.
 
 #. Cherry-pick the CHANGELOG / announce files to the ``main`` branch::
 
-       git fetch --all --prune
+       git fetch upstream
        git checkout upstream/main -b cherry-pick-release
        git cherry-pick -x -m1 upstream/MAJOR.MINOR.x
 
@@ -158,7 +156,7 @@ Both automatic and manual processes described above follow the same steps from t
        git checkout main
        git pull
        git tag MAJOR.{MINOR+1}.0.dev0
-       git push git@github.com:pytest-dev/pytest.git MAJOR.{MINOR+1}.0.dev0
+       git push upstream MAJOR.{MINOR+1}.0.dev0
 
 #. Send an email announcement with the contents from::
 
@@ -170,4 +168,8 @@ Both automatic and manual processes described above follow the same steps from t
    * python-announce-list@python.org (all releases)
    * testing-in-python@lists.idyll.org (only major/minor releases)
 
-   And announce it on `Twitter <https://twitter.com/>`_ with the ``#pytest`` hashtag.
+   And announce it with the ``#pytest`` hashtag on:
+
+   * `Bluesky <https://bsky.app>`_
+   * `Fosstodon <https://fosstodon.org>`_
+   * `Twitter/X <https://x.com>`_
