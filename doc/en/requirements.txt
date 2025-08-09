@@ -8,3 +8,4 @@ sphinxcontrib-svg2pdfconverter
 furo
 sphinxcontrib-towncrier
 sphinx-issues
+urllib3>=2.5.0 # not directly required, pinned by Snyk to avoid a vulnerability
